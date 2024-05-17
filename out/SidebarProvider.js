@@ -272,7 +272,7 @@ class SidebarProvider {
         // Use a nonce to only allow a specific script to be run.
         const nonce = (0, Utils_1.getNonce)();
         // webview.postMessage({ type: 'displayPreviousTestResults', value: 'Displaying Previous Test Results' });
-        const logfilePath = vscode.Uri.joinPath(this._extensionUri, "scripts", "keploy_test_script.log");
+        // const logfilePath =  vscode.Uri.joinPath(this._extensionUri, "scripts", "keploy_test_script.log");
         //call the function below after 3 seconds
         // setTimeout(() => {
         //   displayTestCases(logfilePath.fsPath, webview ,  true , false);

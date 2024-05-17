@@ -24,24 +24,83 @@
           "id": "Keploy-Sidebar",
           "title": "Keploy",
           "icon": "media/logo.png"
+          
         }
       ]
     },
     "views": {
       "Keploy-Sidebar": [
         {
-          "id": "keploy",
+          "id": "Keploy-Sidebar",
           "name": "Keploy",
-          "icon": "media/logo.png"
+          "icon": "media/logo.png",
+          "type": "webview",
+          "webviewOptions": {
+            "retainContextWhenHidden": true
+          }
         }
       ]
-    }
+    },
+    "menus" : {
+      "view/title": [
+        {
+          "command": "keploy.updateKeploy"
+        },
+        {
+          "command": "keploy.getLatestVersion"
+          
+        },
+        {
+          "command": "keploy.KeployVersion"
+        },
+        {
+          "command": "keploy.viewChangeLog"
+        },
+        {
+          "command": "keploy.viewDocumentation"
+        },
+        {
+          "command": "keploy.SignIn",
+          "group": "navigation"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "keploy.HeyKeploy",
+        "title": "HeyKeploy"
+      },
+      {
+        "command": "keploy.SignIn",
+        "title": "Sign In"
+      },
+      {
+        "command": "keploy.updateKeploy",
+        "title": "Update your Keploy"
+      },
+      {
+        "command": "keploy.KeployVersion",
+        "title": "View Your Keploy Version"
+      },
+      {
+        "command": "keploy.getLatestVersion",
+        "title": "Get Latest Version"
+      },
+      {
+        "command": "keploy.viewChangeLog",
+        "title": "View Change Log"
+      },
+      {
+        "command": "keploy.viewDocumentation",
+        "title": "View Docs"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "rollup": "rollup -c -w --bundleConfigAsCjs",
-    "watch": "rollup -c --bundleConfigAsCjs && tsc -watch -p ./",
+    "watch": "tsc -watch -p ./",
     "debug": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
