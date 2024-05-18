@@ -32,12 +32,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(viewDocumentationDisposable);
     
 
-    let hellocommand = vscode.commands.registerCommand('keploy.HeyKeploy', () => {
-        vscode.window.showInformationMessage(`Hey Keploy Community!`);
-    });
-
-    context.subscriptions.push(hellocommand);
-
 	let viewGithubRepoDisposable = vscode.commands.registerCommand('keploy.SignIn', () => {
 		// Logic to view the Github Repo
 		vscode.window.showInformationMessage('Feature coming soon!');

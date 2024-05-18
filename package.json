@@ -67,10 +67,6 @@
     },
     "commands": [
       {
-        "command": "keploy.HeyKeploy",
-        "title": "HeyKeploy"
-      },
-      {
         "command": "keploy.SignIn",
         "title": "Sign In"
       },

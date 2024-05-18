@@ -49,7 +49,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <pre class="terminal" on:click={() => copyToClipboard('keploy test -c CMD_TO_RUN_APP --delay 10')}>keploy test -c CMD_TO_RUN_APP --delay 10</pre>
 
-<button>Explore on Github</button>
+<button id="openRecordPageButton">Try It Now</button>
     </div>
   </div>
 </body>
@@ -77,7 +77,8 @@
 #mainGrid {
   display: grid;
   place-items: center;
-  grid-template-columns: 1fr ;
+  align-items: center;
+  text-wrap: wrap;
   gap: 20px;
   text-align: center;
 }
@@ -110,6 +111,7 @@ h2 {
  pre{
   color: #ff914d;
   margin-bottom: 10px;
+  font-size: 10px;
 }
  
 button {
