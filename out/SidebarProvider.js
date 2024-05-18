@@ -34,6 +34,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SidebarProvider = void 0;
 const vscode = __importStar(require("vscode"));
+// import context from "vscode";
 const Utils_1 = require("./Utils");
 // import { downloadAndUpdate , downloadAndInstallKeployBinary ,downloadAndUpdateDocker  } from './updateKeploy';
 // import { startRecording , stopRecording } from './Record';
@@ -53,6 +54,11 @@ const testOptions = {
 class SidebarProvider {
     constructor(_extensionUri) {
         this._extensionUri = _extensionUri;
+    }
+    postMessage(type, value) {
+        var _a;
+        console.log('postMessage');
+        (_a = this._view) === null || _a === void 0 ? void 0 : _a.webview.postMessage({ type: type, value: value });
     }
     resolveWebviewView(webviewView) {
         this._view = webviewView;
@@ -271,6 +277,7 @@ class SidebarProvider {
         const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css"));
         // Use a nonce to only allow a specific script to be run.
         const nonce = (0, Utils_1.getNonce)();
+        //read the global state to check if the user is signed in
         // webview.postMessage({ type: 'displayPreviousTestResults', value: 'Displaying Previous Test Results' });
         // const logfilePath =  vscode.Uri.joinPath(this._extensionUri, "scripts", "keploy_test_script.log");
         //call the function below after 3 seconds

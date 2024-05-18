@@ -1,15 +1,35 @@
 import * as vscode from 'vscode';
 import { SidebarProvider } from './SidebarProvider';
+import SignIn  from './SignIn';
 
 
 export function activate(context: vscode.ExtensionContext) {
-	const sidebarProvider = new SidebarProvider(context.extensionUri);
-    context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(
-            "Keploy-Sidebar",
-            sidebarProvider
-        )
-    );
+    const sidebarProvider = new SidebarProvider(context.extensionUri);
+        context.subscriptions.push(
+            vscode.window.registerWebviewViewProvider(
+                "Keploy-Sidebar",
+                sidebarProvider
+            )
+        );
+
+    let signedIn = context.globalState.get('accessToken');
+    if(signedIn){
+        vscode.commands.executeCommand('setContext', 'keploy.signedIn', true);
+        sidebarProvider.postMessage('navigate','Keploy');
+    }
+    	let signInCommand = vscode.commands.registerCommand('keploy.SignIn', async () => {
+           
+            const response = await SignIn();
+            context.globalState.update('accessToken', response.accessToken);
+            vscode.window.showInformationMessage('You are now signed in!');
+            vscode.commands.executeCommand('setContext', 'keploy.signedIn', true);
+        }
+    	);
+    	context.subscriptions.push(signInCommand);
+
+        
+
+
 	let getLatestKeployDisposable = vscode.commands.registerCommand('keploy.KeployVersion', () => {
         // Logic to get the latest Keploy
         vscode.window.showInformationMessage('Feature coming soon!');
@@ -31,13 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
     );
     context.subscriptions.push(viewDocumentationDisposable);
     
-
-	let viewGithubRepoDisposable = vscode.commands.registerCommand('keploy.SignIn', () => {
-		// Logic to view the Github Repo
-		vscode.window.showInformationMessage('Feature coming soon!');
-	}
-	);
-	context.subscriptions.push(viewGithubRepoDisposable);
 
 	let getLatestVersion = vscode.commands.registerCommand('keploy.getLatestVersion', () => {
 		// Logic to get the latest version

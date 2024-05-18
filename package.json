@@ -61,14 +61,16 @@
         },
         {
           "command": "keploy.SignIn",
-          "group": "navigation"
+          "group": "navigation",
+        "when": "keploy.signedIn != true"
         }
       ]
     },
     "commands": [
       {
         "command": "keploy.SignIn",
-        "title": "Sign In"
+        "title": "Sign In",
+        "when": "keploy.signedIn != true"
       },
       {
         "command": "keploy.updateKeploy",

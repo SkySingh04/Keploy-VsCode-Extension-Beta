@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+// import context from "vscode";
 import { getNonce } from "./Utils";
 // import { downloadAndUpdate , downloadAndInstallKeployBinary ,downloadAndUpdateDocker  } from './updateKeploy';
 // import { startRecording , stopRecording } from './Record';
@@ -23,7 +24,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 
-  constructor(private readonly _extensionUri: vscode.Uri) { }
+  constructor(private readonly _extensionUri: vscode.Uri) {
+   }
+
+   public postMessage(type: any, value: any) {
+    console.log('postMessage');
+    this._view?.webview.postMessage({ type: type, value: value });
+  }
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
@@ -247,7 +254,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   public revive(panel: vscode.WebviewView) {
     this._view = panel;
   }
-
   private _getHtmlForWebview(webview: vscode.Webview , compiledCSSUri: vscode.Uri , scriptUri: vscode.Uri) {
     const styleResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
@@ -266,6 +272,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
+    //read the global state to check if the user is signed in
+    
 
     // webview.postMessage({ type: 'displayPreviousTestResults', value: 'Displaying Previous Test Results' });
     // const logfilePath =  vscode.Uri.joinPath(this._extensionUri, "scripts", "keploy_test_script.log");
@@ -274,6 +282,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     //   displayTestCases(logfilePath.fsPath, webview ,  true , false);
     // }, 3000);
     // displayTestCases(logfilePath.fsPath, webview);
+   
 
     return `<!DOCTYPE html>
 			<html lang="en">
