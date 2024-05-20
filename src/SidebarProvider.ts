@@ -2,8 +2,8 @@ import * as vscode from "vscode";
 // import context from "vscode";
 import { getNonce } from "./Utils";
 // import { downloadAndUpdate , downloadAndInstallKeployBinary ,downloadAndUpdateDocker  } from './updateKeploy';
-// import { startRecording , stopRecording } from './Record';
-// import { startTesting , stopTesting ,  displayTestCases } from "./Test";
+import { startRecording , stopRecording } from "./Record";
+import { startTesting , stopTesting ,  displayTestCases } from "./Test";
 
 const recordOptions: vscode.OpenDialogOptions = {
   canSelectFolders: true,
@@ -114,9 +114,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             console.log(wsllogPath);
 
             
-            // await startRecording(data.command , data.filePath , data.generatedRecordCommand ,  wslscriptPath , wsllogPath , script.fsPath , logfilePath.fsPath , this._view?.webview );
-            // this._view?.webview.postMessage({ type: 'success', value: 'Recording Started' });
-            // this._view?.webview.postMessage({ type: 'writeRecord', value: 'Write Recorded test cases ', logfilePath: logfilePath.fsPath });
+            await startRecording(data.command , data.filePath , data.generatedRecordCommand ,  wslscriptPath , wsllogPath , script.fsPath , logfilePath.fsPath , this._view?.webview );
+            this._view?.webview.postMessage({ type: 'success', value: 'Recording Started' });
+            this._view?.webview.postMessage({ type: 'writeRecord', value: 'Write Recorded test cases ', logfilePath: logfilePath.fsPath });
           } catch (error) {
             this._view?.webview.postMessage({ type: 'error', value: `Failed to record ${error}` });
           }
@@ -128,7 +128,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           }
           try{
             console.log("Stopping recording");
-            // await stopRecording();
+            await stopRecording();
 
           }
           catch(error){

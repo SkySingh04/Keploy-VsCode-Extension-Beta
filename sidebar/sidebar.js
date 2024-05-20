@@ -31,6 +31,44 @@ let FilePath = "";
 
 //cleanup required
 
+
+function resetUI() {
+  if (recordedTestCasesDiv) {
+    recordedTestCasesDiv.innerHTML = "";
+  }
+  if (recordStatus) {
+    recordStatus.style.display = "none";
+    recordStatus.textContent = "";
+  }
+  if (testResultsDiv) {
+    testResultsDiv.innerHTML = "";
+  }
+  if (testStatus) {
+    testStatus.textContent = "";
+    testStatus.style.display = "none";
+  }
+  if (testSuiteNameDiv) {
+    testSuiteNameDiv.innerHTML = "";
+  }
+  if (totalTestCasesDiv) {
+    totalTestCasesDiv.innerHTML = "";
+  }
+  if (testCasesPassedDiv) {
+    testCasesPassedDiv.innerHTML = "";
+  }
+  if (testCasesFailedDiv) {
+    testCasesFailedDiv.innerHTML = "";
+  }
+  if (lastTestResultsDiv) {
+    lastTestResultsDiv.innerHTML = "";
+  }
+  if (viewCompleteSummaryButton) {
+    viewCompleteSummaryButton.style.display = "none";
+  }
+  if (upperOutputDiv) {
+    upperOutputDiv.style.display = "none";
+  }
+}
 if (openRecordPageButton) {
   openRecordPageButton.addEventListener('click', async () => {
     console.log("openRecordPageButton clicked");
@@ -145,17 +183,21 @@ if (getVersionButton) {
 if (startRecordingButton) {
   startRecordingButton.addEventListener('click', async () => {
     console.log("startRecordingButton clicked");
+    resetUI();
     const commandValue = recordCommandInput.value;
-    recordedTestCasesDiv.innerHTML = "";
+    
     console.log('Command value:', commandValue);
     FilePath = document.getElementById('recordProjectFolder').value;
-    const generatedRecordCommand = document.getElementById('generatedRecordCommand');
+    if (FilePath === "") {
+      FilePath = "./";
+    }
+    // const generatedRecordCommand = document.getElementById('generatedRecordCommand');
     vscode.postMessage({
       type: "startRecordingCommand",
       value: `Recording Command...`,
       command: commandValue,
       filePath: FilePath,
-      generatedRecordCommand: generatedRecordCommand.innerHTML
+      generatedRecordCommand: "" 
     });
   });
 }
@@ -171,7 +213,7 @@ if (stopRecordingButton) {
 if (startTestButton) {
   startTestButton.addEventListener('click', async () => {
     console.log("startTestButton clicked");
-    testStatus.innerHTML = "";
+    resetUI();
     const commandValue = testCommandInput.value;
     console.log('Command value:', commandValue);
     FilePath = document.getElementById('testProjectFolder').value;
@@ -230,12 +272,15 @@ window.addEventListener('message', event => {
     console.log(message.value);
     const recordProjectFolder = document.getElementById('recordProjectFolder');
     if (recordProjectFolder) {
+      recordProjectFolder.style.display = "block";
       recordProjectFolder.value = message.value;
       FilePath = message.value;
     }
   }
   else if (message.type === 'testcaserecorded') {
     console.log("message.textContent", message.textContent);
+    recordStatus.style.display = "block";
+    recordedTestCasesDiv.style.display = "grid";
     if (message.error === true) {
       recordStatus.textContent = `Failed To Test Test Cases`;
       recordStatus.Testist.add("error");

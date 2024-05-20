@@ -76,13 +76,14 @@
         cursor: not-allowed;
     }
     #recordStatus {
+        display: none;
         text-align: center;
         display: none;
         margin: 20px;
         font-weight: bold;
     }
     #recordedTestCases {
-        display: grid;
+        display: none;
         grid-template-columns: 1fr;
         place-items: center;
     }
@@ -156,6 +157,8 @@
             </button>
         </div>
         <hr/>
+        <h3 id="recordStatus"> </h3>
+        <div id="recordedTestCases"></div>
         {#if selectedIconButton === 1}
             <button id="startRecordingButton" class="button" disabled={isRecording} on:click={toggleRecording} bind:this={startRecordingButton}>
                 Start Recording
@@ -164,7 +167,6 @@
         {/if}
         <div class="loader" id="loader"></div>
         <button id="stopRecordingButton" on:click={toggleRecording}>Stop Recording</button>
-        <h3 id="recordStatus"> </h3>
-        <div id="recordedTestCases"></div>
+        
     </div>
 </main>
