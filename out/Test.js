@@ -157,18 +157,19 @@ function startTesting(command, folderPath, generatedTestCommand, wslscriptPath, 
                         bashPath = '/bin/bash';
                     }
                     //remove keploy from the command
-                    generatedTestCommand = generatedTestCommand.replace('keploy', '');
+                    // generatedTestCommand = generatedTestCommand.replace('keploy', '');
+                    command = "test -c" + command;
                     const terminal = vscode.window.createTerminal({
                         name: 'Keploy Terminal',
                         shellPath: bashPath,
                     });
                     terminal.show();
                     if (process.platform === 'win32') {
-                        const testCmd = `${wslscriptPath}  "${wsllogfilePath}" "${folderPath}" "${generatedTestCommand}" ;exit 0 `;
+                        const testCmd = `${wslscriptPath}  "${wsllogfilePath}" "${folderPath}" "${command}" ;exit 0 `;
                         terminal.sendText(testCmd);
                     }
                     else {
-                        const testCmd = `sudo "${scriptPath}" "${logfilePath}" "${folderPath}" "${generatedTestCommand}" ;exit 0 `;
+                        const testCmd = `sudo "${scriptPath}" "${logfilePath}" "${folderPath}" "${command}" ;exit 0 `;
                         // const exitCmd = 'exit';
                         terminal.sendText(testCmd);
                     }

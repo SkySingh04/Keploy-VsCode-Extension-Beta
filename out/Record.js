@@ -126,11 +126,11 @@ function startRecording(command, folderPath, generatedRecordCommand, wslscriptPa
                     });
                     terminal.show();
                     if (process.platform === 'win32') {
-                        const recordCmd = `${wslscriptPath} "${wsllogfilePath}" "${folderPath}" "${command}";`;
+                        const recordCmd = `${wslscriptPath} "${wsllogfilePath}" "${folderPath}" "${command}"; exit 0`;
                         terminal.sendText(recordCmd);
                     }
                     else {
-                        const recordCmd = `sudo "${scriptPath}" "${logfilePath}" "${folderPath}" "${command}"; `;
+                        const recordCmd = `sudo "${scriptPath}" "${logfilePath}" "${folderPath}" "${command}";ecit 0 `;
                         console.log(recordCmd);
                         // const exitCmd = 'exit';
                         terminal.sendText(recordCmd);

@@ -178,7 +178,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             }
             console.log("script path" + wslscriptPath);
             console.log(wsllogPath);
-            // await startTesting(data.command , data.filePath , data.generatedTestCommand  ,wslscriptPath , wsllogPath , script.fsPath , logfilePath.fsPath ,this._view?.webview );
+            await startTesting(data.command , data.filePath , data.generatedTestCommand  ,wslscriptPath , wsllogPath , script.fsPath , logfilePath.fsPath ,this._view?.webview );
           } catch (error) {
             this._view?.webview.postMessage({ type: 'error', value: `Failed to test ${error}` });
           }
@@ -190,7 +190,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           }
           try{
             console.log("Stopping Testing");
-            // await stopTesting();
+            await stopTesting();
           }
           catch(error){
             this._view?.webview.postMessage({ type: 'error', value: `Failed to Stop Testing ${error}` });
@@ -239,7 +239,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           try {
             console.log('Opening Complete Summary...');
             const logfilePath =  vscode.Uri.joinPath(this._extensionUri, "scripts", "keploy_test_script.log");
-            // displayTestCases(logfilePath.fsPath, this._view?.webview , false , true);
+            displayTestCases(logfilePath.fsPath, this._view?.webview , false , true);
           } catch (error) {
             this._view?.webview.postMessage({ type: 'error', value: `Failed to open complete summary ${error}` });
           }

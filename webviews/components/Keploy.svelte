@@ -2,11 +2,12 @@
     let appCommand = '';
     let startTestingButton;
     let startRecordingButton;
-    let recordProjectFolder;
+    let projectFolder;
 
     let selectedIconButton = 1;
     let isProjectFolderVisible = false;
     let isRecording = false;
+    let isTesting = false;
 
     const selectButton = (buttonNumber) => {
         selectedIconButton = buttonNumber;
@@ -16,30 +17,43 @@
         isRecording = !isRecording;
     };
 
+    const toggleTesting = () => {
+        isTesting = !isTesting;
+    };
+
     $: {
         const isAppCommandEmpty = appCommand.trim() === '';
         if (startTestingButton) startTestingButton.disabled = isAppCommandEmpty;
         if (startRecordingButton) startRecordingButton.disabled = isAppCommandEmpty;
-
+        const recordedTestCases = document.getElementById('recordedTestCases');
+        if (recordedTestCases && recordedTestCases.innerHTML.length ===0) {
+            recordedTestCases.style.display ='none';
+            
+        }
         //set visibility of stop recording button
         const stopRecordingButton = document.getElementById('stopRecordingButton');
         if (stopRecordingButton) {
             stopRecordingButton.style.display = isRecording ? 'block' : 'none';
         }
+        const stopTestingButton = document.getElementById('stopTestingButton');
+        if (stopTestingButton) {
+            stopTestingButton.style.display = isTesting ? 'block' : 'none';
+        }
         const loader = document.getElementById('loader');
         if (loader) {
-            loader.style.display = isRecording ? 'block' : 'none';
+            loader.style.display = isRecording || isTesting ? 'block' : 'none';
+            // loader.style.display = isTesting ? 'block' : 'none';
         }
         //set visibility of start recording button and start testing button
         if (startRecordingButton) {
-            startRecordingButton.style.display = isRecording ? 'none' : 'block';
+            startRecordingButton.style.display = isRecording || isTesting ? 'none' : 'block';
         }
         if (startTestingButton) {
-            startTestingButton.style.display = isRecording ? 'none' : 'block';
+            startTestingButton.style.display = isRecording || isTesting ? 'none' : 'block';
         }
     }
 
-    $: isProjectFolderVisible = recordProjectFolder?.value.trim() !== '';
+    $: isProjectFolderVisible = projectFolder?.value.trim() !== '';
 </script>
 
 <style>
@@ -64,10 +78,11 @@
         width: 100%;
         margin: 10px;
     }
-    #stopRecordingButton {
+    #stopRecordingButton , #stopTestingButton {
         background-color: #EF546B;
+        margin-top: 10px;
     }
-    #stopRecordingButton:hover {
+    #stopRecordingButton:hover  , #stopTestingButton:hover{
         background-color: darkred;
     }
     #startRecordingButton:disabled,
@@ -115,8 +130,24 @@
     .icon-button:hover {
         color: #ff9933;
     }
-    #recordProjectFolder {
+    #projectFolder {
         display: none;
+    }
+    #testResults{
+    margin: 20px auto;
+    text-align: center;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr;
+    }
+    #testStatus{
+      text-align: center;
+      display: none;
+    }
+    #viewCompleteSummaryButton{
+      display: none;
+      width: 75%;
+      margin: 10px auto;
     }
 </style>
 
@@ -125,8 +156,8 @@
         <div id="appCommandDiv">
             <input
                 type="text"
-                id="recordCommand"
-                name="recordCommand"
+                id="appCommand"
+                name="appCommand"
                 placeholder="Enter App Command"
                 bind:value={appCommand}
             />
@@ -135,9 +166,9 @@
             <button id="selectRecordFolderButton" class="button">Select Project Folder</button>
             <input
                 type="text"
-                id="recordProjectFolder"
+                id="projectFolder"
                 name="projectFolder"
-                bind:this={recordProjectFolder}
+                bind:this={projectFolder}
                 class:isVisible={isProjectFolderVisible}
             />
         </div>
@@ -159,14 +190,19 @@
         <hr/>
         <h3 id="recordStatus"> </h3>
         <div id="recordedTestCases"></div>
+        <h3 id="testStatus"> </h3>
+        <div id="testResults">
+        </div>
+        <button id="viewCompleteSummaryButton">View Complete Test Summary</button>
         {#if selectedIconButton === 1}
-            <button id="startRecordingButton" class="button" disabled={isRecording} on:click={toggleRecording} bind:this={startRecordingButton}>
+            <button id="startRecordingButton" class="button" disabled={isRecording && isTesting} on:click={toggleRecording} bind:this={startRecordingButton}>
                 Start Recording
             </button>
-            <button id="startTestingButton" class="button" disabled={isRecording} bind:this={startTestingButton}>Start Testing</button>
+            <button id="startTestingButton" class="button" disabled={isRecording && isTesting} on:click={toggleTesting} bind:this={startTestingButton}>Start Testing</button>
         {/if}
         <div class="loader" id="loader"></div>
         <button id="stopRecordingButton" on:click={toggleRecording}>Stop Recording</button>
+        <button id="stopTestingButton" on:click={toggleTesting}>Stop Testing</button>
         
     </div>
 </main>

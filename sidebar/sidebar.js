@@ -3,8 +3,7 @@ const progressDiv = document.getElementById('Progress');
 const filePathDiv = document.getElementById('filePathDiv');
 const recordedTestCasesDiv = document.getElementById('recordedTestCases');
 const testResultsDiv = document.getElementById('testResults');
-const recordCommandInput = document.getElementById('recordCommand');
-const testCommandInput = document.getElementById('testCommand');
+const appCommand = document.getElementById('appCommand');
 const stopRecordingButton = document.getElementById("stopRecordingButton");
 const startRecordingButton = document.getElementById('startRecordingButton');
 const startTestButton = document.getElementById('startTestingButton');
@@ -69,6 +68,7 @@ function resetUI() {
     upperOutputDiv.style.display = "none";
   }
 }
+
 if (openRecordPageButton) {
   openRecordPageButton.addEventListener('click', async () => {
     console.log("openRecordPageButton clicked");
@@ -103,7 +103,7 @@ if(rerunTestSuiteButton){
     console.log("rerunTestSuiteButton clicked");
     vscode.postMessage({
       type: "navigate",
-      value: "Test"
+      value: "Keploy"
     });
   });
 
@@ -184,10 +184,10 @@ if (startRecordingButton) {
   startRecordingButton.addEventListener('click', async () => {
     console.log("startRecordingButton clicked");
     resetUI();
-    const commandValue = recordCommandInput.value;
+    let  commandValue = appCommand.value;
     
     console.log('Command value:', commandValue);
-    FilePath = document.getElementById('recordProjectFolder').value;
+    FilePath = document.getElementById('projectFolder').value;
     if (FilePath === "") {
       FilePath = "./";
     }
@@ -214,22 +214,27 @@ if (startTestButton) {
   startTestButton.addEventListener('click', async () => {
     console.log("startTestButton clicked");
     resetUI();
-    const commandValue = testCommandInput.value;
+    
+    const commandValue = appCommand.value;
     console.log('Command value:', commandValue);
-    FilePath = document.getElementById('testProjectFolder').value;
-    const generatedTestCommand = document.getElementById('generatedTestCommand');
+    FilePath = document.getElementById('projectFolder').value;
+    if (FilePath === "") {
+      FilePath = "./";
+    }
+    // const generatedTestCommand = document.getElementById('generatedTestCommand');
     vscode.postMessage({
       type: "startTestingCommand",
       value: `Testing Command...`,
       command: commandValue,
       filePath: FilePath,
-      generatedTestCommand: generatedTestCommand.innerHTML
+      generatedTestCommand: ""
     });
   });
 }
 if (stopTestButton) {
   stopTestButton.addEventListener('click', async () => {
     console.log("stopTestButton clicked");
+    
     vscode.postMessage({
       type: "stopTestingCommand",
       value: `Stop Testing`
@@ -270,10 +275,10 @@ window.addEventListener('message', event => {
   }
   else if (message.type === 'recordfile') {
     console.log(message.value);
-    const recordProjectFolder = document.getElementById('recordProjectFolder');
-    if (recordProjectFolder) {
-      recordProjectFolder.style.display = "block";
-      recordProjectFolder.value = message.value;
+    const projectFolder = document.getElementById('projectFolder');
+    if (projectFolder) {
+      projectFolder.style.display = "block";
+      projectFolder.value = message.value;
       FilePath = message.value;
     }
   }
@@ -375,9 +380,9 @@ window.addEventListener('message', event => {
     testResultsDiv.appendChild(testCaseElement);
   }
   else if (message.type === "testfile") {
-    const testProjectFolder = document.getElementById('testProjectFolder');
-    if (testProjectFolder) {
-      testProjectFolder.value = message.value;
+    const projectFolder = document.getElementById('projectFolder');
+    if (projectFolder) {
+      projectFolder.value = message.value;
       FilePath = message.value;
     }
     const testCommandDiv = document.getElementById('testCommandInput');
