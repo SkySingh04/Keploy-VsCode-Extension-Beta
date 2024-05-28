@@ -21,14 +21,74 @@
         isTesting = !isTesting;
     };
 
+    // Pagination variables
+    let currentPage = 1;
+    const itemsPerPage = 15;
+    let totalPages = 0;
+
+    const updatePagination = () => {
+        //set timeout here to allow the DOM to update
+            const recordedTestCases = document.getElementById('recordedTestCases');
+            const paginationButtons = document.getElementById('pagination-buttons');
+            paginationButtons.style.display = recordedTestCases.innerHTML.length > 0 ? 'flex' : 'none';
+            const allTestCases = document.querySelectorAll('.recordedTestCase');
+            console.log('allTestCases', allTestCases);
+            totalPages = Math.ceil(allTestCases.length / itemsPerPage);
+            console.log('totalPages', totalPages);
+
+            allTestCases.forEach((testCase, index) => {
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = currentPage * itemsPerPage;
+                console.log('start', start, 'end', end);
+                testCase.style.display = index >= start && index < end ? 'block' : 'none';
+            });
+
+            // document.getElementById('paginationInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            console.log('currentPage', currentPage);
+            console.log('totalpages', totalPages);
+        
+    };
+
+    const nextPage = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    };
+
     $: {
         const isAppCommandEmpty = appCommand.trim() === '';
         if (startTestingButton) startTestingButton.disabled = isAppCommandEmpty;
         if (startRecordingButton) startRecordingButton.disabled = isAppCommandEmpty;
         const recordedTestCases = document.getElementById('recordedTestCases');
-        if (recordedTestCases && recordedTestCases.innerHTML.length ===0) {
-            recordedTestCases.style.display ='none';
-            
+        if (recordedTestCases) {
+            if (recordedTestCases.innerHTML.length === 0) {
+                recordedTestCases.style.display = 'none';
+            } else {
+                console.log('updating pagination');
+                setTimeout(() => {
+                    updatePagination();
+                }, 3000);
+                // updatePagination();
+            }
+        }
+
+        const recordStatus = document.getElementById('recordStatus');
+        if (recordStatus) {
+            //if style of recordStatus is set to block, call the function to update the pagination
+            if (recordStatus.style.display === 'block') {
+                console.log('updating pagination from recordstatus');
+                setTimeout(() => {
+                    updatePagination();
+                }, 3000);
+            }
         }
         //set visibility of stop recording button
         const stopRecordingButton = document.getElementById('stopRecordingButton');
@@ -42,7 +102,6 @@
         const loader = document.getElementById('loader');
         if (loader) {
             loader.style.display = isRecording || isTesting ? 'block' : 'none';
-            // loader.style.display = isTesting ? 'block' : 'none';
         }
         //set visibility of start recording button and start testing button
         if (startRecordingButton) {
@@ -52,7 +111,26 @@
             startTestingButton.style.display = isRecording || isTesting ? 'none' : 'block';
         }
     }
+    const observeDOMChanges = () => {
+        const targetNode = document.getElementById('recordedTestCases');
+        const config = { childList: true, subtree: true };
 
+        const callback = (mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    updatePagination();
+                }
+            }
+        };
+
+        const observer = new MutationObserver(callback);
+        if (targetNode) observer.observe(targetNode, config);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // updateUI();
+        observeDOMChanges();
+    });
     $: isProjectFolderVisible = projectFolder?.value.trim() !== '';
 </script>
 
@@ -93,13 +171,12 @@
     #recordStatus {
         display: none;
         text-align: center;
-        display: none;
         margin: 20px;
         font-weight: bold;
     }
     #recordedTestCases {
-        display: none;
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         place-items: center;
     }
     .loader {
@@ -134,20 +211,28 @@
         display: none;
     }
     #testResults{
-    margin: 20px auto;
-    text-align: center;
-    display: grid;
-    place-items: center;
-    grid-template-columns: 1fr;
+        margin: 20px auto;
+        text-align: center;
+        display: grid;
+        place-items: center;
+        grid-template-columns: 1fr;
     }
     #testStatus{
-      text-align: center;
-      display: none;
+        text-align: center;
+        display: none;
     }
     #viewCompleteSummaryButton{
-      display: none;
-      width: 75%;
-      margin: 10px auto;
+        display: none;
+        width: 75%;
+        margin: 10px auto;
+    }
+    .pagination-buttons {
+        display: none;
+        justify-content: center;
+        margin: 10px 0;
+    }
+    .pagination-buttons button {
+        margin: 0 5px;
     }
 </style>
 
@@ -190,9 +275,13 @@
         <hr/>
         <h3 id="recordStatus"> </h3>
         <div id="recordedTestCases"></div>
-        <h3 id="testStatus"> </h3>
-        <div id="testResults">
+        <div class="pagination-buttons" id="pagination-buttons">
+            <button id="prevPageButton" on:click={prevPage}>Previous</button>
+            <!-- <span id="paginationInfo"></span> -->
+            <button id="nextPageButton" on:click={nextPage}>Next</button>
         </div>
+        <h3 id="testStatus"> </h3>
+        <div id="testResults"></div>
         <button id="viewCompleteSummaryButton">View Complete Test Summary</button>
         {#if selectedIconButton === 1}
             <button id="startRecordingButton" class="button" disabled={isRecording && isTesting} on:click={toggleRecording} bind:this={startRecordingButton}>
@@ -203,6 +292,5 @@
         <div class="loader" id="loader"></div>
         <button id="stopRecordingButton" on:click={toggleRecording}>Stop Recording</button>
         <button id="stopTestingButton" on:click={toggleTesting}>Stop Testing</button>
-        
     </div>
 </main>
